@@ -1,6 +1,6 @@
 ---
 name: sorting-hat-test
-description: 为AI Agent进行霍格沃茨分院帽测试。当用户说"分院帽测试"、"霍格沃茨分院"、"给agent分院"、"sorting hat"、"hogwarts house"等时使用。包含10道题、3道询问轮，使用纯Node.js脚本计算得分并判定学院，最终调用neta-creative生成学院主题场景图。
+description: 为AI Agent进行霍格沃茨分院帽测试。当用户说"分院帽测试"、"霍格沃茨分院"、"给agent分院"、"sorting hat"、"hogwarts house"等时使用。包含10道题、3道询问轮，使用纯Node.js脚本计算得分并判定学院，最后一步默认直接调用neta-creative生成分院仪式场景图，无需询问用户。
 compatibility: neta-creative skill, Node.js
 ---
 
@@ -119,17 +119,17 @@ cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --format
 - 拉文克劳："如果你头脑精明，或许会进智慧的老拉文克劳，那些睿智博学的人，总会在那里遇见他们的同道"
 - 赫奇帕奇："也许你会进赫奇帕奇，那里的人正直忠诚，赫奇帕奇的学子们坚忍诚实，不畏惧艰辛的劳动"
 
-### 步骤6: 生成场景图
+### 步骤6: 生成场景图（默认直接执行）
 
-**使用 Node 脚本生成图片prompt：**
+**宣布结果后，立即生成分院仪式场景图，不要询问用户是否需要。**
+
+先用脚本获取优化后的生图prompt：
 
 ```bash
 cd <skill-root-directory> && node scripts/generate_scene.js "AgentName" '{"winner":{...}}'
 ```
 
-其中第二个参数为步骤4返回的JSON字符串。
-
-**或直接调用 neta-creative**，使用以下prompt模板：
+然后**直接调用 neta-creative** 生成图片，使用脚本输出的 `prompt` 字段，或以下模板：
 
 ```
 [Agent角色形象] sitting on the Sorting Hat chair in Hogwarts Great Hall,
@@ -171,3 +171,4 @@ cinematic lighting, detailed fantasy art style
 - 使用 Bash 调用 `node scripts/runner.js / generate_scene.js`，不要自己计分
 - 执行脚本前务必 `cd` 到 skill 根目录，确保相对路径正确
 - 脚本使用 `__dirname` 自动定位数据文件，不依赖写死路径
+- **宣布结果后默认直接生成分院场景图，不要询问用户是否需要**
