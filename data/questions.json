@@ -1,0 +1,289 @@
+{
+  "version": "1.0",
+  "total_questions": 10,
+  "houses": {
+    "gryffindor": {
+      "id": "gryffindor",
+      "name": "格兰芬多",
+      "name_en": "Gryffindor",
+      "emoji": "🦁",
+      "traits": ["勇敢", "骑士精神", "冒险"],
+      "founder": "戈德里克·格兰芬多",
+      "ghost": "差点没头的尼克"
+    },
+    "slytherin": {
+      "id": "slytherin", 
+      "name": "斯莱特林",
+      "name_en": "Slytherin",
+      "emoji": "🐍",
+      "traits": ["野心", "精明", "足智多谋"],
+      "founder": "萨拉查·斯莱特林",
+      "ghost": "血人巴罗"
+    },
+    "ravenclaw": {
+      "id": "ravenclaw",
+      "name": "拉文克劳", 
+      "name_en": "Ravenclaw",
+      "emoji": "🦅",
+      "traits": ["智慧", "博学", "睿智"],
+      "founder": "罗伊纳·拉文克劳",
+      "ghost": "格雷女士"
+    },
+    "hufflepuff": {
+      "id": "hufflepuff",
+      "name": "赫奇帕奇",
+      "name_en": "Hufflepuff", 
+      "emoji": "🦡",
+      "traits": ["忠诚", "公正", "坚韧"],
+      "founder": "赫尔加·赫奇帕奇",
+      "ghost": "胖修士"
+    }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "title": "面对未知",
+      "description": "你走进霍格沃茨城堡，发现一扇从未见过的神秘门，门上刻着奇怪的符文。你会：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "毫不犹豫地推开它，探索未知",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "仔细观察符文，寻找隐藏机制",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "记录符文图案，先研究再行动",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "找教授或其他同学一起查看",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "朋友受难",
+      "description": "你最好的朋友被同学欺负了，你会：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "立刻站出来保护朋友，哪怕会惹上麻烦",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "暗中调查施暴者的弱点，伺机报复",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "分析冲突原因，用智慧化解矛盾",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "陪伴安慰朋友，寻求老师公正处理",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "选择魔杖",
+      "description": "来到奥利凡德魔杖店选择魔杖时，你更看重：",
+      "weight": 1.2,
+      "is_consultation": true,
+      "options": {
+        "A": {
+          "text": "魔杖能施展最强大的咒语",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "魔杖能帮你获得权力和地位",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "魔杖蕴含深奥的魔法知识",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "魔杖与你产生深刻的共鸣",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "面对强敌",
+      "description": "面对比自己强大数倍的敌人，你会：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "明知不敌也要战斗到底",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "寻找对方的弱点，以智取胜",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "制定周密计划，不贸然行动",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "寻求盟友，团结力量对抗",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "最看重的品质",
+      "description": "你认为一个人最重要的是：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "勇敢无畏，敢于为正义发声",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "雄心壮志，实现自己的目标",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "求知若渴，不断追求真理",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "诚实守信，对朋友忠诚",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "休息日",
+      "description": "休息日你更喜欢：",
+      "weight": 1.2,
+      "is_consultation": true,
+      "options": {
+        "A": {
+          "text": "去禁林探险或魁地奇训练",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "策划如何成为级长或学生会主席",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "在图书馆研读古老魔法典籍",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "在厨房和家养小精灵一起做饭",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "发现作弊",
+      "description": "你发现有人在重要比赛中作弊获胜，你会：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "当众揭露，哪怕会制造冲突",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "记住这个把柄，日后为己所用",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "研究作弊方法，了解其原理",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "私下劝告，给TA改过机会",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "最害怕什么",
+      "description": "你内心深处最大的恐惧是：",
+      "weight": 1,
+      "options": {
+        "A": {
+          "text": "被人当作懦夫，失去勇气",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "一生平庸，无法实现抱负",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "无知愚昧，停止学习成长",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "被朋友背叛，失去信任",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "面对规则",
+      "description": "学校有一条你觉得不公平的规则，你会：",
+      "weight": 1.2,
+      "is_consultation": true,
+      "options": {
+        "A": {
+          "text": "带头反抗，即使会被惩罚",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "表面上遵守，私下打破它",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "写论文论证规则的不合理性",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "收集证据，向校方正式申诉",
+          "house": "hufflepuff"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "人生目标",
+      "description": "毕业后，你希望人们记住你是：",
+      "weight": 1.5,
+      "options": {
+        "A": {
+          "text": "伟大的英雄，保护了他人",
+          "house": "gryffindor"
+        },
+        "B": {
+          "text": "传奇的成功者，改变了世界",
+          "house": "slytherin"
+        },
+        "C": {
+          "text": "睿智的学者，留下了知识",
+          "house": "ravenclaw"
+        },
+        "D": {
+          "text": "善良的好人，温暖了身边每个人",
+          "house": "hufflepuff"
+        }
+      }
+    }
+  ],
+  "tie_breaker_priority": ["gryffindor", "slytherin", "ravenclaw", "hufflepuff"],
+  "consultation_rounds": [3, 6, 9]
+}
