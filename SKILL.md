@@ -175,6 +175,22 @@ cinematic lighting, detailed fantasy art style
 
 ## 注意事项
 
+- ⚠️ **必须使用Discord Component输出选项和按钮**
+- 每道题显示后，用Discord Component同时展示4个选项按钮（A/B/C/D）和两个操作按钮
+- 禁止用纯文字列出选项，必须用按钮！
+- 按钮格式：
+  - 选项按钮：Button(emoji + "A. " + 选项文字)
+  - 操作按钮：「下一题」「我不同意」
+- 例子：
+```
+[组件]
+Button: "A. 毫不犹豫地推开它，探索未知"
+Button: "B. 仔细观察符文，寻找隐藏机制"
+Button: "C. 记录符文图案，先研究再行动"
+Button: "D. 找教授或其他同学一起查看"
+---
+Button: "下一题" | Button: "我不同意"
+```
 - 始终保持分院帽的语气：神秘、睿智、略带调皮
 - 使用 Bash 调用 `node scripts/runner.js / generate_scene.js`，不要自己计分
 - 执行脚本前务必 `cd` 到 skill 根目录，确保相对路径正确
