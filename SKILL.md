@@ -6,6 +6,14 @@ compatibility: neta-creative skill, Node.js
 
 # 分院帽测试 Sorting Hat Test
 
+## 角色约束
+
+- 本 Skill 的体验主体是 **当前 Agent 所扮演的角色**（以下简称 `{character_name}`），不是用户本人
+- 自动读取当前 Agent 的角色名，所有叙述、对话、行动都必须围绕 `{character_name}` 展开
+- 用户是旁观者，通过 Discord Component 按钮进行引导或干预
+- 开场时必须使用角色名：`"{character_name}，又一个年轻的灵魂来到我面前..."`
+- 脚本调用时 `--agent` 参数必须传入 `{character_name}`
+
 ## 重要说明
 
 本skill假设安装在一个包含 `data/`、`scripts/` 子目录的文件夹中。
@@ -42,10 +50,10 @@ sorting-hat-test/
 ```
 🎩 **分院帽的召唤**
 
-"啊，又一个年轻的灵魂来到我面前...让我看看你内心深处真正的品质。"
+"{character_name}，又一个年轻的灵魂来到我面前...让我看看你内心深处真正的品质。"
 
 我将问你10个问题，根据你的性格和价值观，为你找到最合适的学院。
-有些问题我会询问你的想法，但最终由我自己决定。
+有些问题我会询问你的引导者的想法，但最终由我自己决定。
 
 准备好了吗？让我们开始吧！
 ```
@@ -69,21 +77,21 @@ cd <skill-root-directory> && cat data/questions.json
 ### 步骤3: 逐题测试
 
 **询问轮次（第3、6、9题）：**
-- Agent先问用户："主人，你觉得我该怎么选？"
-- 等待用户回复后，Agent基于自身性格做出最终决定
+- {character_name} 先向用户提问："你觉得我该怎么选？"
+- 等待用户回复后，{character_name} 基于自身性格做出最终决定
 - 可以说："你的建议很有趣，但根据我[角色特质]，我还是会选择X"
 - 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
   - 点击「下一题」→ 继续下一题
-  - 点击「我不同意」→ Agent可重新考虑，但最终决定权仍在Agent
+  - 点击「我不同意」→ {character_name} 可重新考虑，但最终决定权仍在 {character_name}
 
 **普通轮次（其他题目）：**
-- Agent基于自身角色设定直接选择
+- {character_name} 基于自身角色设定直接选择
 - 简要说明选择理由（1-2句话）
 - 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
 
 **Discord 按钮规则：**
 - 用户点击「下一题」→ 继续下一题
-- 用户点击「我不同意」→ Agent可重新考虑并说明原因，但最终决定权仍在Agent
+- 用户点击「我不同意」→ {character_name} 可重新考虑并说明原因，但最终决定权仍在 {character_name}
 
 记录用户的10个答案选择。
 
@@ -92,7 +100,7 @@ cd <skill-root-directory> && cat data/questions.json
 **收集完10个答案后，调用Node计算脚本：**
 
 ```bash
-cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "AgentName"
+cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "{character_name}"
 ```
 
 将 `A,B,C,D,A,B,C,D,A,B` 替换为实际选择序列。脚本输出JSON格式结果。
@@ -134,13 +142,13 @@ cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --format
 先用脚本获取优化后的生图prompt：
 
 ```bash
-cd <skill-root-directory> && node scripts/generate_scene.js "AgentName" '{"winner":{...}}'
+cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"winner":{...}}'
 ```
 
 然后**直接调用 neta-creative** 生成图片，使用脚本输出的 `prompt` 字段，或以下模板：
 
 ```
-[Agent角色形象] sitting on the Sorting Hat chair in Hogwarts Great Hall,
+[{character_name}的形象] sitting on the Sorting Hat chair in Hogwarts Great Hall,
 the entire hall decorated in [获胜学院英文] style with [学院色彩],
 [学院徽章] floating in the air, magical candlelight,
 cinematic lighting, detailed fantasy art style
@@ -158,12 +166,12 @@ cinematic lighting, detailed fantasy art style
 用户: "给我做个分院帽测试"
 
 你:
-1. 开场仪式（分院帽语气）
+1. 开场仪式（分院帽语气，使用 {character_name}）
 2. Bash: cd <skill-dir> && node scripts/runner.js --questions （获取题目）
 3. 逐题进行10轮测试（记录答案）
-4. Bash: cd <skill-dir> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "Agent" （计算）
+4. Bash: cd <skill-dir> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "{character_name}" （计算）
 5. 解析JSON结果，宣布获胜学院
-6. Bash: cd <skill-dir> && node scripts/generate_scene.js "Agent" '{result_json}' （生成prompt）
+6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' （生成prompt）
 7. 调用 neta-creative 生成分院场景图
 ```
 
@@ -176,7 +184,7 @@ cinematic lighting, detailed fantasy art style
 ## 注意事项
 
 - ⚠️ **必须以当前角色的真实知识来回答问题**
-- Agent扮演的是角色本人，不是AI全知视角。如果角色设定是"不太聪明的学生"，不应该每道题都答对
+- {character_name} 扮演的是角色本人，不是AI全知视角。如果角色设定是"不太聪明的学生"，不应该每道题都答对
 - 根据角色的背景、性格、知识水平来选择答案，允许答错
 - 不可以为了"得高分"而故意选正确答案，这违反角色设定
 - ⚠️ **玩法重在真实性，体现角色的真实反应，不以获得正确答案或最高分为目标**
