@@ -10,25 +10,29 @@ const houses = {
     colors: 'red and gold',
     symbol: 'lion emblem',
     elements: 'floating flames, golden banners, bold crimson decor',
-    atmosphere: 'fiery and heroic'
+    atmosphere: 'fiery and heroic',
+    quote: 'Gryffindor! Where dwell the brave at heart!'
   },
   slytherin: {
     colors: 'green and silver',
     symbol: 'serpent emblem',
     elements: 'water reflections, silver tapestries, elegant green drapery',
-    atmosphere: 'mysterious and ambitious'
+    atmosphere: 'mysterious and ambitious',
+    quote: 'Slytherin! You\'ll make your real friends here!'
   },
   ravenclaw: {
     colors: 'blue and bronze',
     symbol: 'eagle emblem',
     elements: 'floating books, starry ceiling, bronze celestial decorations',
-    atmosphere: 'intellectual and serene'
+    atmosphere: 'intellectual and serene',
+    quote: 'Ravenclaw! Those of wit and learning!'
   },
   hufflepuff: {
     colors: 'yellow and black',
     symbol: 'badger emblem',
     elements: 'warm sunlight, autumn leaves, earthy cozy decorations',
-    atmosphere: 'warm and welcoming'
+    atmosphere: 'warm and welcoming',
+    quote: 'Hufflepuff! They are just and loyal!'
   }
 };
 
@@ -39,6 +43,8 @@ function generatePrompt(agentName, winner) {
     `the entire hall decorated in ${winner.name_en} style with ${visual.colors} color scheme, ` +
     `${visual.symbol} floating in the air, ${visual.elements}, ` +
     `magical candlelight illuminating the scene, ${visual.atmosphere} atmosphere, ` +
+    `speech bubble above the Sorting Hat showing "${visual.quote}", ` +
+    `${agentName} reacting with surprise and emotion, ` +
     `grand Gothic architecture, enchanted ceiling showing night sky, ` +
     `cinematic lighting, detailed fantasy art style, Harry Potter universe aesthetic`;
   
@@ -65,13 +71,16 @@ function main() {
   
   const winner = result.winner;
   const prompt = generatePrompt(agentName, winner);
+  const visual = houses[winner.id];
   
   const output = {
     agent: agentName,
     house: winner,
     prompt: prompt,
     prompt_cn: `${agentName}坐在霍格沃茨大礼堂的分院帽椅子上，整个礼堂装饰成${winner.name}风格，` +
-               `${winner.name}的主题色调，魔法蜡烛的光芒，庄严神圣的分院仪式场景，电影级光影，奇幻插画风格`
+               `${winner.name}的主题色调，分院帽上方漂浮着对话气泡写着"${visual.quote}"，` +
+               `${agentName}露出惊讶又激动的表情，魔法蜡烛的光芒，庄严神圣的分院仪式场景，` +
+               `电影级光影，奇幻插画风格`
   };
   
   console.log(JSON.stringify(output, null, 2));

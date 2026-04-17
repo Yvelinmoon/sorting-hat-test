@@ -174,26 +174,19 @@ cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --format
 
 **宣布结果后，立即生成分院仪式场景图，不要询问用户是否需要。**
 
-先用脚本获取优化后的生图prompt：
+**必须使用脚本生成图片prompt：**
 
 ```bash
 cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"winner":{...}}'
 ```
 
-然后**直接调用 neta-creative** 生成图片，使用脚本输出的 `prompt` 字段，或以下模板：
+然后**直接调用 neta-creative**，使用脚本输出的 `prompt` 字段。
 
-```
-[{character_name}的形象] sitting on the Sorting Hat chair in Hogwarts Great Hall,
-the entire hall decorated in [获胜学院英文] style with [学院色彩],
-[学院徽章] floating in the air, magical candlelight,
-cinematic lighting, detailed fantasy art style
-```
-
-**各学院视觉元素：**
-- 格兰芬多：红色和金色，狮子徽章，火焰元素
-- 斯莱特林：绿色和银色，蛇徽章，水流元素
-- 拉文克劳：蓝色和青铜色，鹰徽章，星空元素
-- 赫奇帕奇：黄色和黑色，獾徽章，大地元素
+**图片要求：**
+- 场景：霍格沃茨大礼堂分院仪式
+- 必须包含 **对话气泡（speech bubble）**：分院帽上方漂浮着台词气泡，显示分院结果的经典台词
+- {character_name} 要有对应的情绪反应（惊讶、激动、自豪等）
+- 礼堂装饰要匹配获胜学院的主题色和徽章
 
 ## 完整工作流示例
 
