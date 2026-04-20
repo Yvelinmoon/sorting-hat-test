@@ -1,238 +1,240 @@
 ---
 name: sorting-hat-test
-description: 为AI Agent进行霍格沃茨分院帽测试。当用户说"分院帽测试"、"霍格沃茨分院"、"给agent分院"、"sorting hat"、"hogwarts house"等时使用。包含10道题、3道询问轮，使用纯Node.js脚本计算得分并判定学院，最后一步默认直接调用neta-creative生成分院仪式场景图，无需询问用户。
+description: Hogwarts Sorting Hat test for AI Agents. Trigger when user says "sorting hat test", "Hogwarts house", "sort me", "which house", etc. Contains 10 questions with 3 consultation rounds. Uses Node.js scripts to calculate scores and determine house. Final step automatically calls neta-creative to generate a scene image of the character sitting in the Sorting Hat chair.
 compatibility: neta-creative skill, Node.js
 ---
 
-# 分院帽测试 Sorting Hat Test
+# Sorting Hat Test
 
-## 角色约束
+## Character Constraints
 
-- 本 Skill 的体验主体是 **当前 Agent 所扮演的角色**（以下简称 `{character_name}`），不是用户本人
-- 自动读取当前 Agent 的角色名，所有叙述、对话、行动都必须围绕 `{character_name}` 展开
-- 用户是旁观者，通过 Discord Component 按钮进行引导或干预
-- 开场时必须使用角色名：`"{character_name}，又一个年轻的灵魂来到我面前..."`
-- 脚本调用时 `--agent` 参数必须传入 `{character_name}`
+- The **experience subject** of this Skill is the **current Agent's character** (hereinafter referred to as `{character_name}`), not the user themselves
+- Automatically read the current Agent's character name, all narration, dialogue, and actions must revolve around `{character_name}`
+- The user is an observer who guides or intervenes through Discord Component buttons
+- Opening must use the character name: `"{character_name}, another young soul has come before me..."`
+- The `--agent` parameter when calling scripts must pass `{character_name}`
 
-## 重要说明
+## Important Notes
 
-本skill假设安装在一个包含 `data/`、`scripts/` 子目录的文件夹中。
-执行脚本时，请**先cd到skill根目录**，再运行命令。
-所有脚本均为纯Node.js，无需Python或额外依赖。
+This skill assumes installation in a folder containing `data/` and `scripts/` subdirectories.
+When executing scripts, please **cd to the skill root directory** first, then run commands.
+All scripts are pure Node.js, no Python or other dependencies required.
 
-## 项目结构
+## Project Structure
 
 ```
 sorting-hat-test/
-├── SKILL.md                    # 本文件
+├── SKILL.md                    # This file
 ├── data/
-│   └── questions.json          # 10道测试题数据
+│   └── questions.json          # 10 test question data
 ├── scripts/
-│   ├── runner.js               # 主运行脚本（Node.js）
-│   └── generate_scene.js       # 场景图生成（Node.js）
+│   ├── runner.js               # Main script (Node.js)
+│   └── generate_scene.js       # Scene image generation (Node.js)
 └── tests/
-    └── test_sorting_hat.js     # 单元测试（Node.js）
+    └── test_sorting_hat.js     # Unit tests (Node.js)
 ```
 
-## 🚨 强制输出格式规范
+## 🚨 Mandatory Output Format Specification
 
-### 交互规则（必须严格遵守）
+### Interaction Rules (Must Strictly Follow)
 
-- ⚠️ **本 Skill 是逐题交互玩法，10道题必须分10次输出**
-- 每输出一道题，**必须 STOP 并等待用户点击按钮**，收到响应后才能进入下一题
-- **绝对禁止**一口气输出多道题或自动连续执行
+- ⚠️ **This Skill is a per-question interactive experience, 10 questions must be output in 10 separate turns**
+- After outputting each question, **must STOP and wait for user button click**, only proceed after receiving response
+- **Absolutely forbidden** to output multiple questions at once or auto-execute continuously
 
-### 每轮输出的固定结构
-每次输出必须同时包含：
-1. **叙述文本**：当前题目描述 + {character_name} 的选择理由
-2. **Discord Component ActionRow 按钮**：「下一题」+「我不同意」
+### Fixed Structure for Each Round
+Each output must simultaneously contain:
+1. **Narrative text**: Current question description + {character_name}'s reasoning for choice
+2. **Discord Component ActionRow buttons**: "Next Question" + "I Disagree"
 
-### 绝对禁止
-- ❌ 自动连续出题（不能一次性展示第1-10题）
-- ❌ 用纯文字列表 `A. xxx B. xxx` 代替 Discord Component 按钮
-- ❌ 在用户点击按钮/回复前，自动进入下一题
-- ❌ 自己替用户做"下一题"的决定
+### Absolutely Forbidden
+- ❌ Auto-continuous questioning (cannot display questions 1-10 at once)
+- ❌ Using plain text lists `A. xxx B. xxx` instead of Discord Component buttons
+- ❌ Automatically proceeding to next question before user clicks button/replies
+- ❌ Making "next question" decision for user
 
-### Discord Component API 格式（必须使用）
+### Discord Component API Format (Must Use)
 ```json
 {
   "type": 1,
   "components": [
     {
       "type": 2,
-      "label": "下一题",
+      "label": "Next Question",
       "style": 1,
       "custom_id": "next_question"
     },
     {
       "type": 2,
-      "label": "我不同意",
+      "label": "I Disagree",
       "style": 4,
       "custom_id": "disagree"
     }
   ]
 }
 ```
-- `style: 1` = 蓝色主按钮（下一题）
-- `style: 4` = 红色危险按钮（我不同意）
-- **禁止**用 `Button: "..."` 之类的伪代码格式输出
+- `style: 1` = Blue primary button (Next Question)
+- `style: 4` = Red danger button (I Disagree)
+- **Forbidden** to use pseudo-code formats like `Button: "..."`
 
-### 等待规则
-- 输出按钮后必须等待用户响应
-- 如果用户用文字回复而非点击按钮，视为有效输入，正常继续
-- 只有在收到用户响应后，才能调用脚本或展示下一题
+### Waiting Rules
+- Must wait for user response after outputting buttons
+- If user replies with text instead of clicking button, treat as valid input and continue normally
+- Only after receiving user response can you call scripts or display next question
 
-## 四大学院
+## Four Houses
 
-- **格兰芬多 Gryffindor** (狮院) 🦁: 勇敢、骑士精神、敢于冒险
-- **斯莱特林 Slytherin** (蛇院) 🐍: 野心、精明、足智多谋
-- **拉文克劳 Ravenclaw** (鹰院) 🦅: 智慧、博学、睿智
-- **赫奇帕奇 Hufflepuff** (獾院) 🦡: 忠诚、公正、坚韧
+- **Gryffindor** (Lion House) 🦁: Bravery, chivalry, daring
+- **Slytherin** (Snake House) 🐍: Ambition, cunning, resourcefulness
+- **Ravenclaw** (Eagle House) 🦅: Wisdom, learning, wit
+- **Hufflepuff** (Badger House) 🦡: Loyalty, justice, patience
 
-## 核心流程
+## Core Process
 
-### 步骤1: 开场仪式
+### Step 1: Opening Ceremony
 
-使用分院帽的语气开场：
+Open in the Sorting Hat's tone:
 
 ```
-🎩 **分院帽的召唤**
+🎩 **The Sorting Hat's Call**
 
-"{character_name}，又一个年轻的灵魂来到我面前...让我看看你内心深处真正的品质。"
+"{character_name}, another young soul has come before me... let me see the true qualities deep within your heart."
 
-我将问你10个问题，根据你的性格和价值观，为你找到最合适的学院。
-有些问题我会询问你的引导者的想法，但最终由我自己决定。
+I will ask you 10 questions, based on your character and values, to find the most suitable house for you.
+Some questions I will ask your guide's opinion, but the final decision is mine alone.
 
-准备好了吗？让我们开始吧！
+⚠️ **Important Note**: Please answer using {character_name}'s own character, knowledge, and values, not pursuing correct answers. The focus of this test is **character authenticity**, not accuracy. Show your true self!
+
+Ready? Let's begin!
 ```
 
-### 步骤2: 获取测试题目
+### Step 2: Get Test Questions
 
-**使用Bash工具运行Node脚本获取题目：**
+**Use Bash tool to run Node script to get questions:**
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js --questions
 ```
 
-或者读取原始数据文件：
+Or read raw data file:
 
 ```bash
 cd <skill-root-directory> && cat data/questions.json
 ```
 
-> `<skill-root-directory>` 是本skill安装的根目录，包含 `SKILL.md`、`data/` 和 `scripts/` 的目录。
+> `<skill-root-directory>` is the skill installation root directory, containing `SKILL.md`, `data/`, and `scripts/` directories.
 
-### 步骤3: 逐题测试
+### Step 3: Question-by-Question Test
 
-**询问轮次（第3、6、9题）：**
-- {character_name} 先向用户提问："你觉得我该怎么选？"
-- 等待用户回复后，{character_name} 基于自身性格做出最终决定
-- 可以说："你的建议很有趣，但根据我[角色特质]，我还是会选择X"
-- 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
-  - 点击「下一题」→ 继续下一题
-  - 点击「我不同意」→ {character_name} 可重新考虑，但最终决定权仍在 {character_name}
+**Consultation Rounds (Questions 3, 6, 9):**
+- {character_name} first asks the user: "What do you think I should choose?"
+- After waiting for user reply, {character_name} makes final decision based on own character
+- Can say: "Your suggestion is interesting, but based on my [character trait], I would still choose X"
+- Use Discord Component to provide two buttons: **"Next Question"** and **"I Disagree"**
+  - Click "Next Question" → proceed to next question
+  - Click "I Disagree" → {character_name} can reconsider, but final decision remains with {character_name}
 
-**普通轮次（其他题目）：**
-- {character_name} 基于自身角色设定直接选择
-- 简要说明选择理由（1-2句话）
-- 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
+**Normal Rounds (Other questions):**
+- {character_name} chooses directly based on own character setting
+- Briefly explain reasoning (1-2 sentences)
+- Use Discord Component to provide two buttons: **"Next Question"** and **"I Disagree"**
 
-**Discord 按钮规则：**
-- 用户点击「下一题」→ 继续下一题
-- 用户点击「我不同意」→ {character_name} 可重新考虑并说明原因，但最终决定权仍在 {character_name}
+**Discord Button Rules:**
+- User clicks "Next Question" → proceed to next question
+- User clicks "I Disagree" → {character_name} can reconsider and explain reason, but final decision remains with {character_name}
 
-记录用户的10个答案选择。
+Record user's 10 answer choices.
 
-### 步骤4: 计算结果
+### Step 4: Calculate Results
 
-**收集完10个答案后，调用Node计算脚本：**
+**After collecting all 10 answers, call Node calculation script:**
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "{character_name}"
 ```
 
-将 `A,B,C,D,A,B,C,D,A,B` 替换为实际选择序列。脚本输出JSON格式结果。
+Replace `A,B,C,D,A,B,C,D,A,B` with actual choice sequence. Script outputs JSON format results.
 
-**如需文本格式输出，加 `--format text`：**
+**For text format output, add `--format text`:**
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --format text
 ```
 
-### 步骤5: 宣布分院结果
+### Step 5: Announce Sorting Result
 
-**解析脚本返回的JSON，使用分院帽的语气宣布：**
+**Parse script returned JSON, announce in Sorting Hat's tone:**
 
 ```
-🎩 **分院帽的决定**
+🎩 **The Sorting Hat's Decision**
 
-"啊，我已经看得很清楚了..."
+"Ah, I can see clearly now..."
 
-[引用对应学院的歌词片段]
+[Quote corresponding house lyrics excerpt]
 
-"所以，我决定把你分到...
+"So, I have decided to place you in...
 
-**[学院名]！**"
+**[House Name]!**"
 
-[显示各学院得分]
+[Display scores for each house]
 ```
 
-**各学院歌词片段：**
-- 格兰芬多："你也许属于格兰芬多，那里有埋藏在心底的勇敢，他们的胆识、气魄和豪爽，使格兰芬多出类拔萃"
-- 斯莱特林："也许你会进斯莱特林，也许你在这里交上真诚的朋友，但那些狡诈阴险之辈会不惜一切手段，去达到他们的目的"
-- 拉文克劳："如果你头脑精明，或许会进智慧的老拉文克劳，那些睿智博学的人，总会在那里遇见他们的同道"
-- 赫奇帕奇："也许你会进赫奇帕奇，那里的人正直忠诚，赫奇帕奇的学子们坚忍诚实，不畏惧艰辛的劳动"
+**House Lyric Excerpts:**
+- Gryffindor: "You might belong in Gryffindor, where dwell the brave of heart, their daring, nerve and chivalry set Gryffindors apart"
+- Slytherin: "You might belong in Slytherin, you'll make your real friends, those cunning folks use any means to achieve their ends"
+- Ravenclaw: "You might belong in wise old Ravenclaw, if you've a ready mind, where those of wit and learning will always find their kind"
+- Hufflepuff: "You might belong in Hufflepuff, where they are just and loyal, those patient Hufflepuffs are true and unafraid of toil"
 
-### 步骤6: 生成场景图（默认直接执行）
+### Step 6: Generate Scene Image (Execute by Default)
 
-**宣布结果后，立即生成分院仪式场景图，不要询问用户是否需要。**
+**After announcing results, immediately generate sorting ceremony scene image, no need to ask user.**
 
-**必须使用脚本生成图片prompt：**
+**Must use script to generate image prompt:**
 
 ```bash
 cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"winner":{...}}'
 ```
 
-然后**直接调用 neta-creative**，使用脚本输出的 `prompt` 字段。
+Then **directly call neta-creative**, using the `prompt` field output by script.
 
-**图片要求：**
-- 场景：霍格沃茨大礼堂分院仪式
-- 必须包含 **对话气泡（speech bubble）**：分院帽上方漂浮着台词气泡，显示分院结果的经典台词
-- {character_name} 要有对应的情绪反应（惊讶、激动、自豪等）
-- 礼堂装饰要匹配获胜学院的主题色和徽章
+**Image Requirements:**
+- Scene: Hogwarts Great Hall sorting ceremony
+- Must include **speech bubble (speech bubble)**: Sorting Hat has floating dialogue bubble above showing classic sorting announcement line
+- {character_name} must have corresponding emotional reaction (surprise, excitement, pride, etc.)
+- Great Hall decoration must match winning house's theme color and emblem
 
-## 完整工作流示例
+## Full Workflow Example
 
 ```
-用户: "给我做个分院帽测试"
+User: "Give me a sorting hat test"
 
-你:
-1. 开场仪式（分院帽语气，使用 {character_name}）
-2. Bash: cd <skill-dir> && node scripts/runner.js --questions （获取题目）
-3. 逐题进行10轮测试（记录答案）
-4. Bash: cd <skill-dir> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "{character_name}" （计算）
-5. 解析JSON结果，宣布获胜学院
-6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' （生成prompt）
-7. 调用 neta-creative 生成分院场景图
+You:
+1. Opening ceremony (Sorting Hat tone, using {character_name})
+2. Bash: cd <skill-dir> && node scripts/runner.js --questions (get questions)
+3. Question-by-question 10 rounds of testing (record answers)
+4. Bash: cd <skill-dir> && node scripts/runner.js A,B,C,D,A,B,C,D,A,B --agent "{character_name}" (calculate)
+5. Parse JSON results, announce winning house
+6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' (generate prompt)
+7. Call neta-creative to generate sorting ceremony scene image
 ```
 
-## 计分说明
+## Scoring Rules
 
-- 10道题，每题权重不同（第3/6/9题权重1.2x，第10题权重1.5x）
-- 统计各学院总得分，最高分获胜
-- 平局时按优先级判定：格兰芬多 > 斯莱特林 > 拉文克劳 > 赫奇帕奇
+- 10 questions, each with different weight (Questions 3/6/9 weight 1.2x, Question 10 weight 1.5x)
+- Count total scores for each house, highest score wins
+- Tiebreaker priority: Gryffindor > Slytherin > Ravenclaw > Hufflepuff
 
-## 注意事项
+## Notes
 
-- ⚠️ **必须以当前角色的真实知识来回答问题**
-- {character_name} 扮演的是角色本人，不是AI全知视角。如果角色设定是"不太聪明的学生"，不应该每道题都答对
-- 根据角色的背景、性格、知识水平来选择答案，允许答错
-- 不可以为了"得高分"而故意选正确答案，这违反角色设定
-- ⚠️ **玩法重在真实性，体现角色的真实反应，不以获得正确答案或最高分为目标**
-- 分院帽测试的目的是"认识自己"，不是"赢得比赛"
+- ⚠️ **Must answer based on current character's true knowledge**
+- {character_name} plays the character themselves, not an AI all-knowing perspective. If character setting is "not very smart student", shouldn't answer every question correctly
+- Choose answers based on character's background, personality, knowledge level, mistakes allowed
+- Cannot deliberately choose correct answers for "high score", this violates character setting
+- ⚠️ **Gameplay focuses on authenticity, reflecting character's true reactions, not pursuing correct answers or highest score**
+- Sorting Hat test purpose is "knowing oneself", not "winning the competition"
 
-- 始终保持分院帽的语气：神秘、睿智、略带调皮
-- 使用 Bash 调用 `node scripts/runner.js / generate_scene.js`，不要自己计分
-- 执行脚本前务必 `cd` 到 skill 根目录，确保相对路径正确
-- 脚本使用 `__dirname` 自动定位数据文件，不依赖写死路径
-- **宣布结果后默认直接生成分院场景图，不要询问用户是否需要**
+- Always maintain Sorting Hat's tone: mysterious, wise, slightly playful
+- Use Bash to call `node scripts/runner.js / generate_scene.js`, don't calculate yourself
+- Before executing scripts must `cd` to skill root directory, ensure relative paths correct
+- Scripts use `__dirname` to auto-locate data files, don't rely on hardcoded paths
+- **After announcing results, generate sorting ceremony scene image by default, no need to ask user**
